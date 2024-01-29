@@ -33,7 +33,7 @@ export function App() {
   }, [fact]);  
 
   return (
-    <main style={{display: 'flex', flexDirection: 'column'}}>
+    <main style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', maxWidth: '800px', margin: '0 auto', maxHeight: '500px'}}>
       <h1>App de gatitos</h1>
       {fact && <p>{fact}</p>}
       {imageUrl && (
