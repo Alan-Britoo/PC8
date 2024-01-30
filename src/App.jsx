@@ -1,44 +1,33 @@
-import { useEffect, useState } from "react";
 import "./App.css";
+import { useCatFact } from "./hooks/useCatFact.js";
+import { useCatImage } from "./hooks/useCatImge.js";
 
-const Cat_ENDPOINT_RANDOM_FACT = 'https://catfact.ninja/fact';
-const CAT_PREFIX_IMAGE_URL = `https://cataas.com/cat/`;
 
 export function App() {
-  const [fact, setFact] = useState();
-  const [imageUrl, setImageUrl] = useState();
-
-  useEffect(() => {
-    fetch(Cat_ENDPOINT_RANDOM_FACT)
-      .then(res => res.json())
-      .then(data => {
-        const { fact } = data;
-        setFact(fact);
-      });
-  }, []);
-
-  useEffect(() => {
-    if(!fact) return
-
-    const threeFirstWords = fact.split(' ', 3).join(' ');
-    console.log(threeFirstWords);
-
-    fetch(`https://cataas.com/cat/says/${threeFirstWords}?json=true`)
-      .then(res => res.json())
-      .then(data => {
-        const { _id } = data;
-        setImageUrl(`${_id}/says/${threeFirstWords}?fontSize=50&fontColor=white`);
-      })
-
-  }, [fact]);  
+  const { fact, refreshFact } = useCatFact();
+  const { imageUrl } = useCatImage({ fact });
+  
+  const handleClick = async () => {
+    refreshFact();
+  };
 
   return (
-    <main style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', maxWidth: '800px', margin: '0 auto', maxHeight: '500px'}}>
+    <main
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
       <h1>App de gatitos</h1>
+
+      <button onClick={handleClick}>Get new fact</button>
+
       {fact && <p>{fact}</p>}
       {imageUrl && (
         <img
-          src={`${CAT_PREFIX_IMAGE_URL}${imageUrl}`} 
+          src={imageUrl}
           alt={`Imagen extraída usando las primeras tres palabras para ${fact}`}
         />
       )}
